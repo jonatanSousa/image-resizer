@@ -1,0 +1,17 @@
+version: '1.0'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/var/www/
+    ports:
+      - 8080:80
+    networks:
+      - image-network
+#Docker Networks
+networks:
+  image-network:
+    driver: bridge

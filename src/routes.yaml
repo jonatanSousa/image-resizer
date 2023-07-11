@@ -1,0 +1,11 @@
+image_route:
+  path:     /display
+  controller: App\Controller\ImageController::index
+  methods:    GET
+
+display_image_router:
+  path:     /{image}
+  controller: App\Controller\ImageController::cropImage
+  methods:    GET
+  requirements:
+    image: '^[^?]*\.(jpg|jpeg|gif|png|webp)'
