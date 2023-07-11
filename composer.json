@@ -3,14 +3,14 @@
         "symfony/routing": "^6.3",
         "symfony/http-foundation": "^6.3",
         "symfony/config": "^6.3",
-        "phpunit/phpunit": "^10.2",
+        "phpunit/phpunit": "^6.4",
         "symfony/yaml": "^6.3",
         "ext-gd": "*"
     },
     "autoload": {
-        "psr-3": {
+        "psr-4": {
             "App\\": "src"
-        },
-        "classmap": ["src"]
+        }
     }
+
 }

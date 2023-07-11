@@ -1,13 +1,13 @@
 <?php
-namespace App\Controller;
+namespace App\Controllers;
 
 use Symfony\Component\HttpFoundation\Response;
 
 class ImageController
 {
-    public function __construct()
-    {}
 
+    public function __construct()
+    { }
     /**
      * @Route("/display",name="index")
      */
@@ -21,14 +21,6 @@ class ImageController
     {
         // Path to the original image
         $originalImagePath = '../images/' . $parameters['image'];
-
-        // Get crop dimensions
-        $cropWidth = $parameters['params']['crop-width'] ?? null;
-        $cropHeight = $parameters['params']['crop-height'] ?? null;
-
-        // Get resize dimensions
-        $resizeWidth = $parameters['params']['width'] ?? null;
-        $resizeHeight = $parameters['params']['height'] ?? null;
 
         $extension = pathinfo($originalImagePath, PATHINFO_EXTENSION);
         switch ($extension) {
@@ -54,13 +46,21 @@ class ImageController
                 die('Unsupported image format.');
         }
 
+        // Get crop dimensions
+        $cropWidth = $parameters['params']['crop-width'] ?? null;
+        $cropHeight = $parameters['params']['crop-height'] ?? null;
+
+        // Get resize dimensions
+        $resizeWidth = $parameters['params']['width'] ?? null;
+        $resizeHeight = $parameters['params']['height'] ?? null;
+
         // Perform cropping if crop dimensions are provided
         if ($cropWidth && $cropHeight) {
             // Create a new image with the desired crop size
             $croppedImage = imagecreatetruecolor($cropWidth, $cropHeight);
 
             // Perform the crop
-            imagecopyresampled($croppedImage, $sourceImage, 0, 0, 0, 0, $cropWidth, $cropHeight, imagesx($sourceImage), imagesy($sourceImage));
+            imagecopy($croppedImage, $sourceImage, 0, 0, 0, 0, $cropWidth, $cropHeight);
 
             // Set the cropped image as the new source image
             $sourceImage = $croppedImage;
@@ -87,7 +87,19 @@ class ImageController
         // Get the contents of the buffer
         $imageContents = ob_get_clean();
 
-        // Create a response with the image contents and appropriate headers
+        // Clean up the image resources
+        imagedestroy($sourceImage);
+        if (isset($croppedImage)) {
+            imagedestroy($croppedImage);
+        }
+        if (isset($resizedImage)) {
+            imagedestroy($resizedImage);
+        }
+
+        /*$originalImagePath = '../images/' . $parameters['image'];
+        // Redirect to the URL without query parameters
+        return new RedirectResponse($originalImagePath);*/
+
         return new Response($imageContents, Response::HTTP_OK, [
             'Content-Type' => 'image/' . $extension,
             'Content-Disposition' => 'inline; filename=image.' . $extension,
