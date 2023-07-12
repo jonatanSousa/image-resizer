@@ -18,17 +18,17 @@ class ImageController
     {
         $html = '
                 <h1>Original image resized  </h1> 
-                <p><b>Usage :</b> <a href="http://localhost:8080/quiz-example.jpg?width=500&height=500">http://localhost:8080/quiz-example.jpg?width=500&height=500 </a>  </p>
-                <img src="http://localhost:8080/quiz-example.jpg?width=500&height=500">
+                <p><b>Usage :</b> <a href="http://localhost:8080/koala.webp?width=500&height=500">http://localhost:8080/koala.webp?width=500&height=500 </a>  </p>
+                <img src="http://localhost:8080/koala.webp?width=500&height=500">
                 <h1>Original image cropped and resized </h1> 
                 <p><b>Usage :</b> <a href="http://localhost:8080/koala.webp?crop-width=190&crop-height=150&width=300&height=200"> http://localhost:8080/koala.webp?crop-width=190&crop-height=150&width=300&height=200 </a> </p>
                 <img src="http://localhost:8080/koala.webp?crop-width=190&crop-height=150&width=300&height=200">
                 <h1>Original image just cropped</h1> 
-                <p><b>Usage :</b> <a href="http://localhost:8080/quiz-example.jpg?crop-width=250&crop-height=640"> http://localhost:8080/quiz-example.jpg?crop-width=250&crop-height=640</a> </p>
-                <img src="http://localhost:8080/quiz-example.jpg?crop-width=250&crop-height=640" >
+                <p><b>Usage :</b> <a href="http://localhost:8080/koala.webp?crop-width=50&crop-height=80">http://localhost:8080/koala.webp?crop-width=150&crop-height=80</a> </p>
+                <img src="http://localhost:8080/koala.webp?crop-width=150&crop-height=80" >
                 <h1>Original image no changes </h1> 
-                <p><b>Usage :</b> <a href="http://localhost:8080/quiz-example.jpg"> http://localhost:8080/quiz-example.jpg</a> </p>
-                <img src="http://localhost:8080/quiz-example.jpg">
+                <p><b>Usage :</b> <a href="http://localhost:8080/koala.webp"> http://localhost:8080/koala.webp</a> </p>
+                <img src="http://localhost:8080/koala.webp">
                 
                 ';
 
@@ -116,6 +116,7 @@ class ImageController
         if(!file_exists('../images/' . $fileName)){
             file_put_contents('../images/' . $fileName . '.' . $extension, $imageContents);
         }
-        return new RedirectResponse($fileName.'.'.$extension,Response::HTTP_MOVED_PERMANENTLY);
+
+        return new RedirectResponse($fileName.'.'.$extension,Response::HTTP_FOUND);
     }
 }
