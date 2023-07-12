@@ -1,46 +1,46 @@
 <?php
-
+use App\Controllers\ImageController;
 use PHPUnit\Framework\TestCase;
-require __DIR__ . "/../src/Controllers/ImageController.php";
-
-//use App\Controller\ImageController;
 use Symfony\Component\HttpFoundation\Response;
+require_once __DIR__ . '/../src/Controllers/ImageController.php';
+require_once __DIR__ . '/../src/Services/ImageProcessor.php';
 
 class ImageControllerTest extends TestCase
 {
+    public function testIndex(): void
+    {
+        $controller = new ImageController();
+
+        $response = $controller->index();
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertEquals('text/html', $response->headers->get('content-type'));
+    }
+
     public function testCropImage(): void
     {
-        // Create an instance of the ImageController
-        $imageController = new ImageController();
+        $imageProcessorMock = $this->createMock(ImageProcessor::class);
+        $imageProcessorMock->expects($this->once())
+            ->method('processImage')
+            ->willReturn('processed_image_contents');
 
-        // Define the test parameters
+        $controller = new ImageController($imageProcessorMock);
+
         $parameters = [
-            'image' => 'test_image.jpg',
+            'image' => 'quiz-example.jpg',
             'params' => [
-                'crop-width' => 200,
-                'crop-height' => 200,
-                'width' => 400,
-                'height' => 400,
+                'crop-width' => 250,
+                'crop-height' => 640,
+                'width' => 500,
+                'height' => 500,
             ],
         ];
 
-        // Call the cropImage method with the test parameters
-        $response = $imageController->cropImage($parameters);
+        $response = $controller->cropImage($parameters);
 
-        // Assert that the response is an instance of Symfony Response
-        $this->assertInstanceOf(Response::class, $response);
-
-        // Assert the response status code
-        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-
-        // Assert the response headers
-        $expectedHeaders = [
-            'Content-Type' => 'image/jpeg',
-            'Content-Disposition' => 'inline; filename=image.jpg',
-        ];
-        $this->assertSame($expectedHeaders, $response->headers->all());
-
-        // Assert the response content (image contents)
-        $this->assertNotEmpty($response->getContent());
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertEquals(Response::HTTP_MOVED_PERMANENTLY, $response->getStatusCode());
+        $this->assertEquals('processed_image_contents', $response->getTargetUrl());
     }
 }

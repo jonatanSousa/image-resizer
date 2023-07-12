@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use App\Controllers\ImageProcessor;
 
 try {
     // Load routes from the yaml file
@@ -30,7 +31,7 @@ try {
     // Get controller and method from the route parameters
     [$controllerClass, $method] = explode('::', $parameters['_controller']);
     // Create an instance of the controller
-    $controller = new $controllerClass();
+    $controller = new $controllerClass(new ImageProcessor);
 
     // Call the specified method with parameters
     $response = $controller->$method($parameters);
