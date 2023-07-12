@@ -23,7 +23,7 @@ class ImageController
                 <img src="http://localhost:8080/quiz-example.jpg?crop-width=250&crop-height=640&width=500&height=500">
                 <h1>Original image just cropped</h1> 
                 <p><b>Usage :</b> http://localhost:8080/quiz-example.jpg?crop-width=250&crop-height=640 </p>
-                <img src="http://localhost:8080/quiz-example.jpg?crop-width=250&crop-height=640" alt="Trulli" width="500" height="333">
+                <img src="http://localhost:8080/quiz-example.jpg?crop-width=250&crop-height=640" >
                 <h1>Original image no changes </h1> 
                 <img src="http://localhost:8080/quiz-example.jpg">
                 ';
@@ -41,22 +41,6 @@ class ImageController
         $originalImagePath = '../images/' . $parameters['image'];
         $fileName = pathinfo($parameters['image'], PATHINFO_FILENAME);
         $extension = pathinfo($originalImagePath, PATHINFO_EXTENSION);
-
-        // Get crop dimensions
-        $cropWidth = $parameters['params']['crop-width'] ?? null;
-        $cropHeight = $parameters['params']['crop-height'] ?? null;
-
-        // Get resize dimensions
-        $resizeWidth = $parameters['params']['width'] ?? null;
-        $resizeHeight = $parameters['params']['height'] ?? null;
-
-        //Has file been generated ?
-        $fileName .= '_cw_'.$cropWidth."_cx_".$cropHeight."_w_". $resizeWidth."_h_".$resizeHeight.'.'.$extension;
-        if (file_exists('../images/generated/' . $fileName)) {
-          $generatedImage = '../images/generated/' . $fileName;
-          //Redirect to the URL without query parameters
-           return new RedirectResponse($generatedImage,Response::HTTP_MOVED_PERMANENTLY);
-        }
 
         //get source image
         switch ($extension) {
@@ -78,10 +62,40 @@ class ImageController
                 $outputFunction = 'imagewebp';
                 break;
             default:
-                return new Response('Unsupported image format.', Response::HTTP_BAD_REQUEST);
                 // Handle unsupported image format
+                return new Response('Unsupported image format.', Response::HTTP_BAD_REQUEST);
         }
 
+        // Create a temporary buffer to store the image
+        ob_start();
+
+        // Output the image to the buffer using the appropriate image*() function based on the original format
+        $outputFunction($sourceImage, null);
+
+        // Get the contents of the buffer
+        $imageContents = ob_get_clean();
+
+        // Get crop dimensions
+        $cropWidth = $parameters['params']['crop-width'] ?? null;
+        $cropHeight = $parameters['params']['crop-height'] ?? null;
+
+        // Get resize dimensions
+        $resizeWidth = $parameters['params']['width'] ?? null;
+        $resizeHeight = $parameters['params']['height'] ?? null;
+
+        //Has file been generated ?
+        if(count($parameters['params'])) {
+            $fileName .= '_cw_'.$cropWidth."_cx_".$cropHeight."_w_". $resizeWidth."_h_".$resizeHeight;
+        }
+
+        if (file_exists('../images/' . $parameters['image']) && !count($parameters['params'])) {
+
+            //Redirect to the URL without query parameters
+            return new Response($imageContents, Response::HTTP_OK, [
+                'Content-Type' => 'image/' . $extension,
+                'Content-Disposition' => 'inline; filename=image.' . $extension,
+            ]);
+        }
         // Get the contents of the buffer
         $imageContents = $this->getImageTransformed(
             $cropWidth,
@@ -93,12 +107,9 @@ class ImageController
         );
 
         //savefile generated image to be used later
-        file_put_contents('../images/generated/' . $fileName, $imageContents);
+        file_put_contents('../images/' . $fileName.'.'.$extension, $imageContents);
 
-        return new Response($imageContents, Response::HTTP_OK, [
-            'Content-Type' => 'image/' . $extension,
-            'Content-Disposition' => 'inline; filename=image.' . $extension,
-        ]);
+        return new RedirectResponse($fileName.'.'.$extension,Response::HTTP_MOVED_PERMANENTLY);
     }
 
     /**
