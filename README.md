@@ -15,6 +15,8 @@ git clone https://github.com/jonatanSousa/image-resizer.git
 This project  uses composer as dependency manager in the root directory install it,
 following the instructions on https://getcomposer.org/doc/00-intro.md
 
+
+
 After downloading composer execute this command:
 ```
 composer install
@@ -22,7 +24,9 @@ composer install
 
 ## Using Docker
 
-One should use 🐳 Docker to setup & install the project please kindly follow the instructions:
+One should use 🐳 Docker compose to setup & install the project,please kindly follow the instructions:
+https://docs.docker.com/compose/install/
+
 At this point i assume you have docker & running on your machine
 
 ```

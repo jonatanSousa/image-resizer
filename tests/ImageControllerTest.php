@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Controllers\ImageController;
 use App\Services\ImageProcessor;
 use PHPUnit\Framework\TestCase;
