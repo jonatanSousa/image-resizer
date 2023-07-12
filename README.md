@@ -26,3 +26,7 @@ after
 docker compose up --build
 ```
 
+
+
+
+the shoudl be available at http://localhost:8080/display  ![image](https://github.com/jonatanSousa/image-resizer/assets/35583616/4d1eef90-fb7b-4adb-acf5-04b316772679)
