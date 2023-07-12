@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ImageController
 {
     public function __construct(
-        public $imageProcessor  = new ImageProcessor()
+        public $imageProcessor = new ImageProcessor()
     )
     {}
 
@@ -18,16 +18,18 @@ class ImageController
     {
         $html = '
                 <h1>Original image resized  </h1> 
-                <p><b>Usage :</b> http://localhost:8080/quiz-example.jpg?width=500&height=500 </p>
+                <p><b>Usage :</b> <a href="http://localhost:8080/quiz-example.jpg?width=500&height=500">http://localhost:8080/quiz-example.jpg?width=500&height=500 </a>  </p>
                 <img src="http://localhost:8080/quiz-example.jpg?width=500&height=500">
                 <h1>Original image cropped and resized </h1> 
-                <p><b>Usage :</b> http://localhost:8080/quiz-example.jpg?crop-width=250&crop-height=640&width=200&height=200 </p>
-                <img src="http://localhost:8080/quiz-example.jpg?crop-width=250&crop-height=640&width=500&height=500">
+                <p><b>Usage :</b> <a href="http://localhost:8080/koala.webp?crop-width=190&crop-height=150&width=300&height=200"> http://localhost:8080/koala.webp?crop-width=190&crop-height=150&width=300&height=200 </a> </p>
+                <img src="http://localhost:8080/koala.webp?crop-width=190&crop-height=150&width=300&height=200">
                 <h1>Original image just cropped</h1> 
-                <p><b>Usage :</b> http://localhost:8080/quiz-example.jpg?crop-width=250&crop-height=640 </p>
+                <p><b>Usage :</b> <a href="http://localhost:8080/quiz-example.jpg?crop-width=250&crop-height=640"> http://localhost:8080/quiz-example.jpg?crop-width=250&crop-height=640</a> </p>
                 <img src="http://localhost:8080/quiz-example.jpg?crop-width=250&crop-height=640" >
                 <h1>Original image no changes </h1> 
+                <p><b>Usage :</b> <a href="http://localhost:8080/quiz-example.jpg"> http://localhost:8080/quiz-example.jpg</a> </p>
                 <img src="http://localhost:8080/quiz-example.jpg">
+                
                 ';
 
         return new Response($html, Response::HTTP_OK,
@@ -40,6 +42,7 @@ class ImageController
      */
     public function cropImage($parameters): Response
     {
+
         $originalImagePath = '../images/' . $parameters['image'];
         $fileName = pathinfo($parameters['image'], PATHINFO_FILENAME);
         $extension = pathinfo($originalImagePath, PATHINFO_EXTENSION);
@@ -68,15 +71,6 @@ class ImageController
                 return new Response('Unsupported image format.', Response::HTTP_BAD_REQUEST);
         }
 
-        // Create a temporary buffer to store the image
-        ob_start();
-
-        // Output the image to the buffer using the appropriate image*() function based on the original format
-        $outputFunction($sourceImage, null);
-
-        // Get the contents of the buffer
-        $imageContents = ob_get_clean();
-
         // Get crop dimensions
         $cropWidth = $parameters['params']['crop-width'] ?? null;
         $cropHeight = $parameters['params']['crop-height'] ?? null;
@@ -91,6 +85,14 @@ class ImageController
         }
 
         if (file_exists('../images/' . $parameters['image']) && !count($parameters['params'])) {
+            // Create a temporary buffer to store the image
+            ob_start();
+            // Output the image to the buffer using the appropriate image*() function based on the original format
+            $outputFunction($sourceImage, null);
+
+            // Get the contents of the buffer
+            $imageContents = ob_get_clean();
+
             return new Response($imageContents, Response::HTTP_OK, [
                 'Content-Type' => 'image/' . $extension,
                 'Content-Disposition' => 'inline; filename=image.' . $extension,
@@ -111,8 +113,9 @@ class ImageController
         }
 
         //savefile generated image to be used later
-        file_put_contents('../images/' . $fileName.'.'.$extension, $imageContents);
-
+        if(!file_exists('../images/' . $fileName)){
+            file_put_contents('../images/' . $fileName . '.' . $extension, $imageContents);
+        }
         return new RedirectResponse($fileName.'.'.$extension,Response::HTTP_MOVED_PERMANENTLY);
     }
 }

@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use App\Controllers\ImageProcessor;
+use App\Services\ImageProcessor;
 
 try {
     // Load routes from the yaml file

@@ -1,11 +1,11 @@
 FROM php:8.1-apache
 
 RUN apt-get update \
-  && apt-get install -y libzip-dev git wget libjpeg-dev libpng-dev --no-install-recommends \
+  && apt-get install -y libzip-dev git wget libjpeg-dev libpng-dev libwebp-dev --no-install-recommends \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN docker-php-ext-configure gd --with-jpeg \
+RUN docker-php-ext-configure gd --with-webp=/usr/include/webp  --with-jpeg \
   && docker-php-ext-install -j$(nproc) gd
 
 RUN wget https://getcomposer.org/download/2.0.9/composer.phar \
@@ -20,8 +20,6 @@ CMD ["apache2-foreground"]
 ENTRYPOINT ["/entrypoint.sh"]
 COPY . /var/www
 WORKDIR /var/www
-
-CMD ["apache2-foreground"]
 
 RUN a2enmod rewrite
 RUN service apache2 restart

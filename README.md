@@ -1,7 +1,7 @@
 # image-resizer
 =============================
 
-This app performs basic validation on image present in the server and render cropped and resized. 
+This app performs basic validation on image formats (jpg|jpeg|gif|png|webp) present in the server and renders those images cropped and resized. 
 
 
 # Installation
@@ -20,13 +20,32 @@ After downloading composer execute this command:
 composer install
 ```
 
-after
+## Using Docker
+
+One should use 🐳 Docker to setup & install the project please kindly follow the instructions:
+At this point i assume you have docker & running on your machine
 
 ```
 docker compose up --build
 ```
 
+A Simple HTML page should be available with example to use the image resize 
+
+```
+http://localhost:8080/display  
+```
+
+![image](https://github.com/jonatanSousa/image-resizer/assets/35583616/4d1eef90-fb7b-4adb-acf5-04b316772679)
 
 
+Unit Testing
+=============================
 
-the shoudl be available at http://localhost:8080/display  ![image](https://github.com/jonatanSousa/image-resizer/assets/35583616/4d1eef90-fb7b-4adb-acf5-04b316772679)
+```
+./vendor/bin/phpunit tests
+
+```
+
+Why Symfony components?
+=============================
+There is no particular reason except for curiosity and learning purposes.
