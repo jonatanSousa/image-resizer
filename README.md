@@ -1,10 +1,15 @@
-# image-resizer
+ image-resizer
 =============================
 
 This app performs basic validation on image formats (jpg|jpeg|gif|png|webp) present in the server and renders those images cropped and resized. 
 
 
-# Installation
+ Installation
+=============================
+
+## The Machine must have:
+- Composer
+- Docker 
 
 Clone the repository to a configured webserver.
 
