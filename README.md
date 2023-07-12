@@ -37,13 +37,13 @@ after having docker & running on your machine execute:
 docker compose up --build
 ```
 
-A Simple HTML page should be available with example to use the image resize 
+A Simple HTML page should be available with example on how to use the image resize 
 
 ```
 http://localhost:8080/display  
 ```
 
-![image](https://github.com/jonatanSousa/image-resizer/assets/35583616/4d1eef90-fb7b-4adb-acf5-04b316772679)
+![image](https://github.com/jonatanSousa/image-resizer/assets/35583616/579c75c3-1996-424c-94a3-e7bd552db780)
 
 
 Unit Testing
