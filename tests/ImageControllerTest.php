@@ -44,7 +44,7 @@ class ImageControllerTest extends TestCase
         $response = $controller->cropImage($parameters);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals(Response::HTTP_MOVED_PERMANENTLY, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_FOUND, $response->getStatusCode());
         $this->assertEquals('quiz-example_cw_250_cx_640_w_500_h_500.jpg', $response->getTargetUrl());
     }
 
