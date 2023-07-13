@@ -11,7 +11,7 @@ This app performs basic validation on image formats (jpg|jpeg|gif|png|webp) pres
 - Composer
 - Docker 
 
-Clone the repository to a configured webserver.
+Clone the repository to a configured machine.
 
 ```
 git clone https://github.com/jonatanSousa/image-resizer.git
