@@ -37,7 +37,7 @@ after having docker & running on your machine execute:
 docker compose up --build
 ```
 
-A Simple HTML page should be available with example on how to use the image resize 
+A Simple HTML page should be available with examples on how to use the image resize 
 
 ```
 http://localhost:8080/display  
